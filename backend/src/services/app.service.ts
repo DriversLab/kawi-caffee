@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { randomInt } from 'crypto';
 import Redis from 'ioredis';
 
@@ -9,11 +9,9 @@ interface IAppService {
 
 @Injectable()
 export class AppService implements IAppService {
-  private logger: Logger;
   private redis: Redis;
 
   constructor() {
-    this.logger = new Logger(AppService.name);
     this.redis = new Redis({ host: 'localhost', port: 6379 }); // configure as needed
   }
 
@@ -25,9 +23,6 @@ export class AppService implements IAppService {
 
   async verifyOTC(key: string, code: string) {
     const stored = await this.redis.get(`otc:${key}`);
-    this.logger.log(key);
-    this.logger.log(stored);
-    this.logger.log(code);
     if (!stored) return false;
     if (stored !== code) return false;
 
